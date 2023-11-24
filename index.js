@@ -32,8 +32,7 @@ app.post("/addguest", function(req,res){
     let output = fs.readFileSync("guestbook.html").toString();
     output =output.replace("display: none;", "display: block;");
     let guestListHTML = createGuestListHTML(guests);// create HTML here
-      console.log(guestListHTML)
-      output=output.replace("<!-- ***Here printout all guest info*** -->",guestListHTML);
+    output=output.replace("<!-- ***Here printout all guest info*** -->",guestListHTML);
     
     return  res.send(output)
   }
