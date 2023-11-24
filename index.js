@@ -10,14 +10,6 @@ let httpServer = app.listen(port, function () {
 app.use(express.urlencoded({ extended: true })); 
 
 
-//Start page and when you log out you come here
-//<form class="col-12" action="/" method="get">
-
-/*app.get("/", function (req, res) {
-    res.sendFile(__dirname + "/login.html");
-  });*/
-
-
 /**
  * Post
  * 1. add a guest to guests.json when click subit button
@@ -29,11 +21,22 @@ app.post("/addguest", function(req,res){
   let guests= fs.readFileSync("guests.json").toString();
   guests= JSON.parse(guests);// from Json to Object
 
+  
   //let {name, comment}=req.body;
   let name = req.body.name;
   let comment= req.body.comment;
   let time= createFormatTimeStamp(new Date());
   console.log(time);
+
+  if(name==''|| comment==''){
+    let output = fs.readFileSync("guestbook.html").toString();
+    output =output.replace("display: none;", "display: block;");
+    let guestListHTML = createGuestListHTML(guests);// create HTML here
+      console.log(guestListHTML)
+      output=output.replace("<!-- ***Here printout all guest info*** -->",guestListHTML);
+    
+    return  res.send(output)
+  }
 
   guests.push({name,comment,time});// Add object to guest.json
   console.log(guests)
@@ -102,6 +105,12 @@ function createGuestListHTML(guests) {
 
 }
 
+/**
+ * function createFormatTimeStamp
+ * @param {*} date 
+ * @returns 
+ */
+
 function createFormatTimeStamp (date){
     let year = date.getFullYear();
     let month = String(date.getMonth() +1).padStart(2, '0');
@@ -109,11 +118,12 @@ function createFormatTimeStamp (date){
     let hours = String(date.getHours()).padStart(2, '0');
     let minutes = String(date.getMinutes()).padStart(2, '0');
     let seconds = String(date.getSeconds()).padStart(2, '0');
+    let format =`${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
 
-return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+return format;
 }
 
 
-app.use(express.static('public'));
+app.use(express.static('public')); // Use css in public folder
 
 
