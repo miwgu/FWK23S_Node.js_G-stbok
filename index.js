@@ -29,8 +29,13 @@ app.post("/addguest", function(req,res){
   let guests= fs.readFileSync("guests.json").toString();
   guests= JSON.parse(guests);// from Json to Object
 
-  let {name, comment}=req.body;
-  guests.push({name,comment});// Add object to guest.json
+  //let {name, comment}=req.body;
+  let name = req.body.name;
+  let comment= req.body.comment;
+  let time= createFormatTimeStamp(new Date());
+  console.log(time);
+
+  guests.push({name,comment,time});// Add object to guest.json
   console.log(guests)
   req.body.name='';
   req.body.comment='';
@@ -85,6 +90,9 @@ function createGuestListHTML(guests) {
           <div class="col-md-12" style="display:flex;">
           <p class="p-2">Comment:</p> <p class="p-2">${guests[i].comment}</p>
           </div>
+          <div class="col-md-12" style="display:flex;">
+          <p class="p-2">Time:</p> <p class="p-2">${guests[i].time}</p>
+          </div>
         </div>
       </div>
     `
@@ -93,6 +101,18 @@ function createGuestListHTML(guests) {
   return guest_html;
 
 }
+
+function createFormatTimeStamp (date){
+    let year = date.getFullYear();
+    let month = String(date.getMonth() +1).padStart(2, '0');
+    let day = String(date.getDate()).padStart(2, '0');
+    let hours = String(date.getHours()).padStart(2, '0');
+    let minutes = String(date.getMinutes()).padStart(2, '0');
+    let seconds = String(date.getSeconds()).padStart(2, '0');
+
+return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+}
+
 
 app.use(express.static('public'));
 
