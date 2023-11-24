@@ -94,4 +94,6 @@ function createGuestListHTML(guests) {
 
 }
 
+app.use(express.static('public'));
+
 
